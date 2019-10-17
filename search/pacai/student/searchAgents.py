@@ -64,7 +64,10 @@ class CornersProblem(SearchProblem):
                 logging.warning('Warning: no food in corner ' + str(corner))
 
         # *** Your Code Here ***
-        raise NotImplementedError()
+        self.nodes_expanded = 0     # Count how many nodes expanded
+        self.four_corners = []      # Keep track of four corners
+        self.cost = lambda x : 1    # Successors actions cost 1
+
 
     def actionsCost(self, actions):
         """
@@ -84,6 +87,28 @@ class CornersProblem(SearchProblem):
                 return 999999
 
         return len(actions)
+
+    def startingState(self, ):
+        """
+        Returns the start state (in your search space,
+        NOT a `pacai.core.gamestate.AbstractGameState`).
+        """
+        pass
+
+    def isGoal(self, ):
+        """
+        Returns whether this search state is a goal state of the problem.
+        """
+        pass
+
+    def successorStates(self, ):
+        """
+        Returns successor states, the actions they require, and a cost of 1.
+        """
+        pass
+
+
+
 
 def cornersHeuristic(state, problem):
     """
