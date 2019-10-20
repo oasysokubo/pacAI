@@ -10,20 +10,6 @@ from pacai.util import queue
 from pacai.util import stack
 from pacai.util import priorityQueue
 
-# collecting the path from bookkeeping structure (stateDic)
-def PathCreate(start, goal, action, stateDic):
-    solution=[]
-    solution.append(action)                                     # put last step (to goal) in list
-    preNode, direction = stateDic[(goal,action)]                # use goal ans its action to track previous state and previos action
-    solution.insert(0, direction)
-    while not (preNode, direction) == (start,'Stop'):           # keep tracking until arrive starting state
-        preNode, direction = stateDic[(preNode, direction)]
-        solution.insert(0, direction)
-
-    solution.pop(0)                                             # pop out unnecessary 'Stop' action in intial position
-    return solution
-
-
 def fringeState(problem, node, action, preState, status = 'None'):
     """
     initialize fringe with initial state
@@ -31,10 +17,10 @@ def fringeState(problem, node, action, preState, status = 'None'):
     """
     if status is 'uniform':
         fringe = priorityQueue.PriorityQueue()
-        fringe.push((node, action, 0 ,preState, action), 0)
+        fringe.push((node, action, 0, preState, action), 0)
     elif status is 'aStar':
         fringe = priorityQueue.PriorityQueue()
-        fringe.push((node, action, 0 ,preState, action), 0)
+        fringe.push((node, action, 0, preState, action), 0)
     elif status is 'breadth':
         fringe = queue.Queue()
         fringe.push((node, action, [], preState, action))
@@ -44,7 +30,7 @@ def fringeState(problem, node, action, preState, status = 'None'):
 
     return fringe
 
-# Helper function for searches
+# Helper function for all search algorithms
 def firstSearch(problem, heuristic = None, status = 'None'):
 
     """
@@ -67,11 +53,22 @@ def firstSearch(problem, heuristic = None, status = 'None'):
     while not fringe.isEmpty():
         node, action, cost, preState, preDir = fringe.pop()                                     # choose the last state
 
-        if not ( node ) in exploded:
+        if not (node) in exploded:
             exploded.add((node))    
             stateDic[(node, action)] = (preState, preDir)                                       # set node as exploded and bookkeeping
-            if (problem.isGoal( (node))):                                                       # check if reach gaol state
-                return PathCreate(problem.startingState(), node, action, stateDic)              # get path from bookkeeping structure (stateDic)
+            if (problem.isGoal((node))):                                                        # check if reach gaol state
+                #return PathCreate(problem.startingState(), node, action, stateDic)              # get path from bookkeeping structure (stateDic)
+                solution=[]
+                solution.append(action)                                     # put last step (to goal) in list
+                preNode, direction = stateDic[(node, action)]                # use goal ans its action to track previous state and previos action
+                solution.insert(0, direction)
+                while not (preNode, direction) == (problem.startingState(),'Stop'):           # keep tracking until arrive starting state
+                    preNode, direction = stateDic[(preNode, direction)]
+                    solution.insert(0, direction)
+                    print(direction)
+
+                solution.pop(0)                                             # pop out unnecessary 'Stop' action in intial position
+                return solution
 
             succStates  = problem.successorStates(node)                                         # get successor state
             for v in succStates:
