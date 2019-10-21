@@ -72,9 +72,8 @@ class CornersProblem(SearchProblem):
                 logging.warning('Warning: no food in corner ' + str(corner))
 
         # *** Your Code Here ***
+        # self.cost = lambda x:1      # Successors actions cost 1
         self._numExpanded = 0       # Count how many nodes expanded
-        self.cost = lambda x : 1    # Successors actions cost 1
-
 
     def actionsCost(self, actions):
         """
@@ -133,24 +132,22 @@ class CornersProblem(SearchProblem):
                 ((nextx, nexty) == self.corners[3]) or state[1][3])
                 ), action, 1))
             
+                # nextxy = (nextx, nexty) 
+                # successorPost = None
+                # if nextxy in self.corners:
+                #     # successor = [successorState[0], successorState[1], successorState[2], successorState[3]]
+                #     for corner in range(len(self.corners)):
+                #         print("nextxy {}\ncorner {}".format(nextxy, self.corners[corner]))
+                #         if nextxy == self.corners[corner]:
+                #             # successor[corner] = currentState[corner]
+                #             successors = True
+                #         else:
+                #             successor[corner] = currentState[corner]
+                #     print(len(successors))
+                #     successorPost = (successors[0], successors[1], successors[2], successors[3])
+                # successors.append(((nextxy, successorPost), action, 1))
+
         self._numExpanded += 1
-
-        #         nextxy = (nextx, nexty) 
-        #         cost = self.cost(nextxy)
-        #         successorState = state[1]
-
-        #         if nextxy in self.corners:
-        #             successor = [successorState[0], successorState[1], successorState[2], successorState[3]]
-        #             for corner in range(len(self.corners)):
-        #                 if nextxy == self.corners[corner]:
-        #                     # successor[corner] = currentState[corner]
-        #                     successor[corner] = True
-        #                 else:
-        #                     successor[corner] = currentState[corner]
-        #             successorState = (successor[0], successor[1], successor[2], successor[3])
-        #         successors.append(((nextxy, successorState), action, cost))
-
-        # self._numExpanded += 1
         return successors
 
 def cornersHeuristic(state, problem):
@@ -172,42 +169,14 @@ def cornersHeuristic(state, problem):
     walls = problem.walls  # These are the walls of the maze, as a Grid.
 
     # Get unvisited corners
-    # unvisitedCorners = []
-    # currentState = state[1]
-    # for corner in range(len(corners)):
-    #     if not currentState[corner]:
-    #         unvisitedCorners.append(corners[corner])
+    successor = [False, False, False, False]
+    currentPosition = state[0]
+    currentStatus = state[1]
 
-    # # At the currentState, go to the nearest corner
-    # cornersHeuristic = 0
-    # currentPosition = state[0]
-    # while(len(unvisitedCorners) != 0):
-    #     trackHeuristic = []
-    #     trackCorners = []
-    #     for corner in corners:
-    #         trackCorners.append(corner)
-    #         currentHeuristic = distance.manhattan(currentPosition, corner) 
-    #         trackHeuristic.append(currentHeuristic)
-    #     minHeuristic = min(trackHeuristic)
-    #     indexHeuristic = trackHeuristic.index(minHeuristic)
-    #     minCorner = trackCorners[indexHeuristic]
-    #     cornersHeuristic += minHeuristic
-    #     currentPosition = minCorner
-    #     print("minCorner = {}".format(minCorner))
-
-    #     indexCorner = unvisitedCorners.index(minCorner)
-    #     del unvisitedCorners[indexCorner]
-    # return cornersHeuristic # heuristic.null(state, problem)  # Default to trivial solution
-
-    mDist = [0,0,0,0]
-    total = 0
-    for corner in range(4):
-        mDist[corner] = (
-            abs(state[0][0] - corners[corner][0]) + 
-            abs(state[0][1] - corners[corner][1])
-        ) * (not state[1][corner])
-    mDist.sort()
-    return mDist[3]
+    for corner in range(len(corners)):
+        successor[corner] = distance.manhattan(currentPosition, corners[corner]) * (not currentStatus[corner])
+    successor.sort()
+    return successor[-1]
 
 def foodHeuristic(state, problem):
     """
@@ -241,27 +210,16 @@ def foodHeuristic(state, problem):
     position, foodGrid = state
 
     # *** Your Code Here ***
-    # maxHeuristic = 0
-    # foodGridHeuristic = foodGrid.asList()
-
-    # if len(foodGridHeuristic) != 0:
-    #     trackHeuristic = []
-    #     for food_grid in foodGridHeuristic:
-    #         currentHeuristic = distance.manhattan(position, food_grid)
-    #         trackHeuristic.append(currentHeuristic)
-    #     maxHeuristic = max(trackHeuristic)
-    # return maxHeuristic
-    nFood = len(foodGrid.asList())
-    if nFood is 0:
+    if len(foodGrid.asList()) is 0: 
         return 0
-    total = 0
+
+    maxHeuristic = 0
     trackHeuristic = []
     for food in foodGrid.asList():
-        #total += distance.manhattan(position, food)
         currentHeuristic = distance.manhattan(position, food)
         trackHeuristic.append(currentHeuristic)
     maxHeuristic = max(trackHeuristic)
-    return maxHeuristic#total / nFood + nFood
+    return sum(trackHeuristic)/len(trackHeuristic) + len(trackHeuristic) #maxHeuristic 
 
 class ClosestDotSearchAgent(SearchAgent):
     """
@@ -334,16 +292,14 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         self.food = gameState.getFood()
         self.startPosition = gameState.getPacmanPosition()
         self.walls = gameState.getWalls()
-        self.cost = lambda x : 1
+        # self.cost = lambda x:1
     
     def isGoal(self, state):
         """
         The state is Pacman's position.
         """
-
         x, y = state
         return (x, y) in self.food.asList()
-
 
 class ApproximateSearchAgent(BaseAgent):
     """
