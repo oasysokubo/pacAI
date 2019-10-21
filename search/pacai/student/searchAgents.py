@@ -13,7 +13,6 @@ Date:   October 17, 2019
 import logging
 
 from pacai.core.actions import Actions
-from pacai.core.search import heuristic
 from pacai.core.search.position import PositionSearchProblem
 from pacai.core.search.problem import SearchProblem
 from pacai.agents.base import BaseAgent
@@ -72,7 +71,6 @@ class CornersProblem(SearchProblem):
                 logging.warning('Warning: no food in corner ' + str(corner))
 
         # *** Your Code Here ***
-        # self.cost = lambda x:1      # Successors actions cost 1
         self._numExpanded = 0       # Count how many nodes expanded
 
     def actionsCost(self, actions):
@@ -99,13 +97,17 @@ class CornersProblem(SearchProblem):
         Returns the start state (in your search space,
         NOT a `pacai.core.gamestate.AbstractGameState`).
         """
-        return (self.startingPosition, (False, False, False, False))        # Returns starting position and 4 false because no corners are visited yet
+        # Returns starting position and 4 false because no corners are visited yet
+        return (self.startingPosition, (False, False, False, False))
 
     def isGoal(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
+        self._visitedLocations.add(state[0])
+        self._visitHistory.append(state[0])
 
+        # Return boolean whether all four corners are discovered and satisfied
         currentState = state[1]
         return currentState[0] and currentState[1] and currentState[2] and currentState[3]
 
@@ -123,31 +125,34 @@ class CornersProblem(SearchProblem):
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
 
-            if (not hitsWall):  # Implement a successor discovery
-                successors.append((
-                ((nextx,nexty),(
-                ((nextx, nexty) == self.corners[0]) or state[1][0],
-                ((nextx, nexty) == self.corners[1]) or state[1][1],
-                ((nextx, nexty) == self.corners[2]) or state[1][2],
-                ((nextx, nexty) == self.corners[3]) or state[1][3])
-                ), action, 1))
-            
-                # nextxy = (nextx, nexty) 
-                # successorPost = None
-                # if nextxy in self.corners:
-                #     # successor = [successorState[0], successorState[1], successorState[2], successorState[3]]
-                #     for corner in range(len(self.corners)):
-                #         print("nextxy {}\ncorner {}".format(nextxy, self.corners[corner]))
-                #         if nextxy == self.corners[corner]:
-                #             # successor[corner] = currentState[corner]
-                #             successors = True
-                #         else:
-                #             successor[corner] = currentState[corner]
-                #     print(len(successors))
-                #     successorPost = (successors[0], successors[1], successors[2], successors[3])
-                # successors.append(((nextxy, successorPost), action, 1))
+            # Implement a successor discovery, check if any corners are satisfied
+            # and update values as they are satisfied
+            if (not hitsWall):
+                successorsState = []
+                nextxy = (nextx, nexty)
+                if nextxy == self.corners[0]:
+                    successorsState.append(True)
+                else:
+                    successorsState.append(currentState[0])
+                if nextxy == self.corners[1]:
+                    successorsState.append(True)
+                else:
+                    successorsState.append(currentState[1])
+                if nextxy == self.corners[2]:
+                    successorsState.append(True)
+                else:
+                    successorsState.append(currentState[2])
+                if nextxy == self.corners[3]:
+                    successorsState.append(True)
+                else:
+                    successorsState.append(currentState[3])
+                # Put all updated values of 4 corners to a variable
+                successorPost = (successorsState[0], successorsState[1],
+                successorsState[2], successorsState[3])
+                # Append to go to the next move
+                successors.append(((nextxy, successorPost), action, 1))
 
-        self._numExpanded += 1
+        self._numExpanded += 1  # Count the number of nodes expanded
         return successors
 
 def cornersHeuristic(state, problem):
@@ -166,17 +171,20 @@ def cornersHeuristic(state, problem):
 
     # *** Your Code Here ***
     corners = problem.corners  # These are the corner coordinates
-    walls = problem.walls  # These are the walls of the maze, as a Grid.
+    # walls = problem.walls  # These are the walls of the maze, as a Grid.
 
     # Get unvisited corners
     successor = [False, False, False, False]
     currentPosition = state[0]
     currentStatus = state[1]
 
+    # Take the manhattan distance of the nodes
+    # current position and all corners tuple location
+    # Iterate through all corners
     for corner in range(len(corners)):
-        successor[corner] = distance.manhattan(currentPosition, corners[corner]) * (not currentStatus[corner])
-    successor.sort()
-    return successor[-1]
+        successor[corner] = distance.manhattan(currentPosition,
+        corners[corner]) * (not currentStatus[corner])  # Ignore corners already visited
+    return max(successor)  # Return the max value from all calculated manhattan values of all corner
 
 def foodHeuristic(state, problem):
     """
@@ -210,16 +218,15 @@ def foodHeuristic(state, problem):
     position, foodGrid = state
 
     # *** Your Code Here ***
-    if len(foodGrid.asList()) is 0: 
+    if len(foodGrid.asList()) == 0:  # If no food, then no need to go on
         return 0
-
-    maxHeuristic = 0
     trackHeuristic = []
+    # Manhattan dist between curr node position and all foods
+    # If there is food, iterate through all available foods
     for food in foodGrid.asList():
         currentHeuristic = distance.manhattan(position, food)
         trackHeuristic.append(currentHeuristic)
-    maxHeuristic = max(trackHeuristic)
-    return sum(trackHeuristic)/len(trackHeuristic) + len(trackHeuristic) #maxHeuristic 
+    return max(trackHeuristic)
 
 class ClosestDotSearchAgent(SearchAgent):
     """
@@ -292,8 +299,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         self.food = gameState.getFood()
         self.startPosition = gameState.getPacmanPosition()
         self.walls = gameState.getWalls()
-        # self.cost = lambda x:1
-    
+
     def isGoal(self, state):
         """
         The state is Pacman's position.
