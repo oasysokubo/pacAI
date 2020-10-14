@@ -2,17 +2,6 @@
 
 A modified version of the Pacman educational project from the [Berkeley AI Lab](http://ai.berkeley.edu/project_overview.html).
 
-Some improvements from the original project:
- - Upgraded to Python 3.
- - Organized into packages.
- - Brought up to a common style with a style checker.
- - Added logging.
- - Added tests.
- - Fixed several bugs.
- - Generalized and reorganized several project elements.
- - Replaced the graphics systems.
- - Added the ability to generate gifs from any pacman or capture game.
-
 ### In Action
 
 ![](https://github.com/oasysokubo/pacAI/blob/master/img/000.gif)
@@ -71,3 +60,10 @@ Here are just a few that we know about:
  - Jeremy Cowles for implementing an initial tournament infrastructure.
  - LiveWires for providing some code from a Pacman implementation (used / modified with permission).
  - The LINQS lab from UCSC.
+
+ Fucntionalities Added:
+ - Added tests.
+ - Fixed several bugs.
+ - Generalized and reorganized several project elements.
+ - Replaced the graphics systems.
+ - Added the ability to generate gifs from any pacman or capture game.
