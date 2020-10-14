@@ -13,6 +13,10 @@ Some improvements from the original project:
  - Replaced the graphics systems.
  - Added the ability to generate gifs from any pacman or capture game.
 
+### In Action
+
+![]()
+
 ### FAQ
 
 **Q:** What version of Python does this project support?  
