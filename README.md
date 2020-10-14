@@ -15,7 +15,21 @@ Some improvements from the original project:
 
 ### In Action
 
-![]()
+![](https://github.com/oasysokubo/pacAI/blob/master/img/000.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/001.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/002.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/003.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/004.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/005.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/006.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/007.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/008.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/009.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/010.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/011.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/012.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/013.gif)
+![](https://github.com/oasysokubo/pacAI/blob/master/img/014.gif)
 
 ### FAQ
 
