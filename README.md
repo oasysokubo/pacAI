@@ -1,6 +1,6 @@
 ## Pacman
 
-A modified version of the Pacman educational project from the [Berkeley AI Lab](http://ai.berkeley.edu/project_overview.html).
+A modified version of the Pacman project from the [Berkeley AI Lab](http://ai.berkeley.edu/project_overview.html) using reinforcement learning.
 
 ### In Action
 
